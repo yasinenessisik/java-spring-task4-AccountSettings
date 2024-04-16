@@ -24,4 +24,5 @@ public class UserProfile extends BaseEntity{
     private User user;
 
 
+
 }
