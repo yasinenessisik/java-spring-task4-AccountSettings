@@ -17,6 +17,13 @@ public class PhoneNumber extends BaseEntity {
     private User user;
 
 
+    public Integer getPhoneNumber_Id() {
+        return phoneNumber_Id;
+    }
+
+    public void setPhoneNumber_Id(Integer phoneNumber_Id) {
+        this.phoneNumber_Id = phoneNumber_Id;
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
