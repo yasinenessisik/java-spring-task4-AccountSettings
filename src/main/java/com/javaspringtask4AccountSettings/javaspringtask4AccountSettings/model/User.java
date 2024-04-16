@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 public class User extends BaseEntity{
 
     @Id

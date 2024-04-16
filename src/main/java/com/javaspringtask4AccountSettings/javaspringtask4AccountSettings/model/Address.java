@@ -7,7 +7,7 @@ public class Address extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String street;
 
@@ -21,13 +21,6 @@ public class Address extends BaseEntity{
     @JoinColumn(name = "userId")
     private User user;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getStreet() {
         return street;

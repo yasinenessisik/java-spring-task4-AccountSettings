@@ -7,7 +7,7 @@ public class PhoneNumber extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long phoneNumber_Id;
+    private Integer phoneNumber_Id;
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -16,13 +16,7 @@ public class PhoneNumber extends BaseEntity {
     @JoinColumn(name = "userId")
     private User user;
 
-    public Long getPhoneNumber_Id() {
-        return phoneNumber_Id;
-    }
 
-    public void setPhoneNumber_Id(Long phoneNumber_Id) {
-        this.phoneNumber_Id = phoneNumber_Id;
-    }
 
     public String getPhoneNumber() {
         return phoneNumber;
