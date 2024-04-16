@@ -8,7 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
