@@ -17,6 +17,12 @@ public class Notification extends BaseEntity{
 
     private Boolean securityAlert;
 
+    public Notification(Boolean accountBalanceUpdate, Boolean transcationUpdate, Boolean securityAlert) {
+        this.accountBalanceUpdate = accountBalanceUpdate;
+        this.transcationUpdate = transcationUpdate;
+        this.securityAlert = securityAlert;
+    }
+
     public Integer getNotificationId() {
         return notificationId;
     }

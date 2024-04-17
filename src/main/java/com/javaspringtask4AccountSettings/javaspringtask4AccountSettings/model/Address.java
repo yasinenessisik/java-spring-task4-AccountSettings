@@ -21,6 +21,13 @@ public class Address extends BaseEntity{
     @JoinColumn(name = "userId")
     private User user;
 
+    public Address(String street, String city, String postalCode, String country) {
+        this.street = street;
+        this.city = city;
+        this.postalCode = postalCode;
+        this.country = country;
+    }
+
     public Integer getAddress_Id() {
         return address_Id;
     }

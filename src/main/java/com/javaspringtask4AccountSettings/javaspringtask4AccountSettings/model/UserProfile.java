@@ -23,6 +23,13 @@ public class UserProfile extends BaseEntity{
     @JoinColumn(name = "userId")
     private User user;
 
+    public UserProfile(String profileImageUrl, BigDecimal monthlyIncome, EducationLevel educationLevel, String profession) {
+        this.profileImageUrl = profileImageUrl;
+        this.monthlyIncome = monthlyIncome;
+        this.educationLevel = educationLevel;
+        this.profession = profession;
+    }
+
     public Integer getUserProfileId() {
         return userProfileId;
     }

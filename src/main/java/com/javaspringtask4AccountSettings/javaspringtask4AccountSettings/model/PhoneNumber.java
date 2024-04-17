@@ -1,8 +1,10 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 public class PhoneNumber extends BaseEntity {
 
     @Id
@@ -16,6 +18,9 @@ public class PhoneNumber extends BaseEntity {
     @JoinColumn(name = "userId")
     private User user;
 
+    public PhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public Integer getPhoneNumber_Id() {
         return phoneNumber_Id;
