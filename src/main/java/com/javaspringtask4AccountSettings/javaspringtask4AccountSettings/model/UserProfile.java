@@ -30,6 +30,10 @@ public class UserProfile extends BaseEntity{
         this.profession = profession;
     }
 
+    public UserProfile() {
+
+    }
+
     public Integer getUserProfileId() {
         return userProfileId;
     }

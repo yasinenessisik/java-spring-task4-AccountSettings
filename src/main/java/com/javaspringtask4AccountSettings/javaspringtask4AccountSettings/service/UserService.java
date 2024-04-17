@@ -7,6 +7,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.*;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,8 @@ public class UserService {
                 .errorMessage("User Not Found.")
                 .build()));
     }
+
+    @Transactional
     public UserDto saveUser(UserRegisterRequest userRegisterRequest){
         String password = userRegisterRequest.getPassword();
         Boolean twoFactorAuth = userRegisterRequest.getTwoFactorAuth();
@@ -80,5 +83,4 @@ public class UserService {
 
         return userDtoConverter.convert(user);
     }
-
 }
