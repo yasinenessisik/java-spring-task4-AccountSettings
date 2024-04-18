@@ -16,8 +16,13 @@ public class Email extends BaseEntity{
     @JoinColumn(name = "userId")
     private User user;
 
-    public Email(String email) {
+    public Email(String email,User user) {
         this.email = email;
+        this.user = user;
+    }
+
+    public Email() {
+
     }
 
     public int getEmailId() {

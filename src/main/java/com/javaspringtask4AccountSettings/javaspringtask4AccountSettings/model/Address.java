@@ -17,7 +17,7 @@ public class Address extends BaseEntity{
 
     private String country;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
 
@@ -26,6 +26,10 @@ public class Address extends BaseEntity{
         this.city = city;
         this.postalCode = postalCode;
         this.country = country;
+    }
+
+    public Address() {
+
     }
 
     public Integer getAddress_Id() {

@@ -19,7 +19,7 @@ public class UserProfile extends BaseEntity{
     private EducationLevel educationLevel;
 
     private String profession;
-    @OneToOne
+    @OneToOne(mappedBy = "userProfile")
     @JoinColumn(name = "userId")
     private User user;
 
