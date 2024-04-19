@@ -10,16 +10,15 @@ public class PhoneNumber extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer phoneNumber_Id;
-
-    @Column(name = "phone_number")
     private String phoneNumber;
-
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 
-    public PhoneNumber(String phoneNumber) {
+    public PhoneNumber(String phoneNumber,User user)
+    {
         this.phoneNumber = phoneNumber;
+        this.user = user;
     }
 
     public Integer getPhoneNumber_Id() {

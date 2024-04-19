@@ -25,11 +25,11 @@ public class Email extends BaseEntity{
 
     }
 
-    public int getEmailId() {
+    public Integer getEmailId() {
         return emailId;
     }
 
-    public void setEmailId(int emailId) {
+    public void setEmailId(Integer emailId) {
         this.emailId = emailId;
     }
 
@@ -41,4 +41,11 @@ public class Email extends BaseEntity{
         this.email = email;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

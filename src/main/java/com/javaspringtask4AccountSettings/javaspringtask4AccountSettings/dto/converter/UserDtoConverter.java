@@ -19,11 +19,14 @@ public class UserDtoConverter {
     public UserDto convert(User from){
         return UserDto.builder()
                 .userId(from.getUserId())
+                .firstName(from.getFirstName())
+                .lastName(from.getLastName())
                 .password(from.getPassword())
                 .emails(from.getEmails().stream().map(email -> emailDtoConverter.convert(email)).collect(Collectors.toList()))
                 .addresses(from.getAddresses().stream().map(address -> addressDtoConverter.convert(address)).collect(Collectors.toList()))
                 .userProfile(userProfileDtoConverter.convert(from.getUserProfile()))
                 .phoneNumbers(from.getPhoneNumbers().stream().map(phoneNumber -> phoneNumberDtoConverter.convert(phoneNumber)).collect(Collectors.toList()))
+                .notificationDto(notificationDtoConverter.convert(from.getNotification()))
                 .twoFactorAuth(from.getTwoFactorAuth())
                 .isEnabledNotification(from.getEnabledNotification())
                 .build();

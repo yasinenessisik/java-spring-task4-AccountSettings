@@ -1,11 +1,10 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 public class Notification extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,11 +15,20 @@ public class Notification extends BaseEntity{
     private Boolean transcationUpdate;
 
     private Boolean securityAlert;
+    @OneToOne(mappedBy = "notification")
+    @JoinColumn(name = "userId")
+    private User user;
 
-    public Notification(Boolean accountBalanceUpdate, Boolean transcationUpdate, Boolean securityAlert) {
+    public Notification(Boolean accountBalanceUpdate, Boolean transcationUpdate, Boolean securityAlert,User user) {
         this.accountBalanceUpdate = accountBalanceUpdate;
         this.transcationUpdate = transcationUpdate;
         this.securityAlert = securityAlert;
+        this.user = user;
+    }
+
+
+    public Notification() {
+
     }
 
     public Integer getNotificationId() {

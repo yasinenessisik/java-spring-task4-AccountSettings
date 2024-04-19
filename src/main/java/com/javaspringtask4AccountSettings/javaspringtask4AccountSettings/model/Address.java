@@ -21,11 +21,12 @@ public class Address extends BaseEntity{
     @JoinColumn(name = "userId")
     private User user;
 
-    public Address(String street, String city, String postalCode, String country) {
+    public Address(String street, String city, String postalCode, String country,User user) {
         this.street = street;
         this.city = city;
         this.postalCode = postalCode;
         this.country = country;
+        this.user = user;
     }
 
     public Address() {

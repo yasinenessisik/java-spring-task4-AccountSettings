@@ -16,6 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 public class UserRegisterRequest {
 
+    private String firstName;
+
+    private String lastName;
+
     private String password;
 
     private List<EmailRequest> emails;
@@ -25,6 +29,8 @@ public class UserRegisterRequest {
     private UserProfileRequest userProfile;
 
     private List<PhoneNumberRequest> phoneNumbers;
+
+    private NotificationRegisterRequest notificationRegisterRequest;
 
     private Boolean twoFactorAuth;
 

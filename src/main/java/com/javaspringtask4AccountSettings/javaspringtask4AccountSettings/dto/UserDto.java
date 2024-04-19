@@ -18,6 +18,10 @@ import java.util.List;
 public class UserDto {
     private String userId;
 
+    private String firstName;
+
+    private String lastName;
+
     private String password;
 
     private List<EmailDto> emails;
@@ -27,6 +31,9 @@ public class UserDto {
     private UserProfileDto userProfile;
 
     private List<PhoneNumberDto> phoneNumbers;
+
+    private NotificationDto notificationDto;
+
     private Boolean twoFactorAuth;
 
     private Boolean isEnabledNotification;
