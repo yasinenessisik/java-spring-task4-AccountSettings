@@ -4,13 +4,10 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.Use
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserProfileDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.converter.UserProfileDtoConverter;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.profile.ChangeProfileRequest;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.PhoneNumber;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.UserProfile;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.UserProfileRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserProfileService {
@@ -24,14 +21,15 @@ public class UserProfileService {
         this.userService = userService;
     }
 
-    public UserProfileDto saveUserProfile(UserProfile userProfile){
+    public UserProfileDto saveUserProfile(UserProfile userProfile) {
         return userProfileDtoConverter.convert(userProfile);
     }
-    public UserDto changeProfile(ChangeProfileRequest changeProfileRequest) {
+
+    public UserProfileDto changeProfile(ChangeProfileRequest changeProfileRequest) {
 
         User user = userService.getUserByUserId(changeProfileRequest.getUserId());
 
-        UserProfile  newUserProfile = user.getUserProfile();
+        UserProfile newUserProfile = user.getUserProfile();
 
         newUserProfile.setProfileImageUrl(changeProfileRequest.getProfileImageUrl());
         newUserProfile.setProfession(changeProfileRequest.getProfession());
@@ -41,7 +39,7 @@ public class UserProfileService {
 
         UserDto updatedUser = userService.save(user);
 
-        return updatedUser;
+        return updatedUser.getUserProfile();
     }
 
     public UserProfileDto getUserProfile(String userId) {

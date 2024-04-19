@@ -30,31 +30,35 @@ public class AddressService {
         this.userService = userService;
     }
 
-    public AddressDto getAddressByAddressId(Integer addressId){
-        return addressDtoConverter.convert(addressRepository.findById(addressId).orElseThrow(()-> GenericExceptionHandler.builder()
+    public AddressDto getAddressByAddressId(Integer addressId) {
+        return addressDtoConverter.convert(addressRepository.findById(addressId).orElseThrow(() -> GenericExceptionHandler.builder()
                 .errorMessage("Address Not Found")
                 .errorCode(ErrorCode.ADDRESS_NOT_FOUND)
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .build()));
     }
-    public List<Address> saveAllAddress(List<Address> address){
+
+    public List<Address> saveAllAddress(List<Address> address) {
         return addressRepository.saveAll(address);
     }
-    public UserDto saveAddress(SaveAddressRequestDto from){
+
+    public AddressDto saveAddress(SaveAddressRequestDto from) {
         User user = userService.getUserByUserId(from.getUserId());
 
-        user.getAddresses().add(new Address(
+        Address address = new Address(
                 from.getStreet(),
                 from.getCity(),
                 from.getPostalCode(),
                 from.getCountry(),
                 user
-        ));
+        );
+        user.getAddresses().add(address);
 
         UserDto updatedUser = userService.save(user);
-        return updatedUser;
+        return addressDtoConverter.convert(address);
     }
-    public UserDto deleteAddress(DeleteAddressRequestDto from) {
+
+    public AddressDto deleteAddress(DeleteAddressRequestDto from) {
         User user = userService.getUserByUserId(from.getUserId());
 
         Address addressToDelete = null;
@@ -68,12 +72,13 @@ public class AddressService {
         if (addressToDelete != null) {
             user.getAddresses().remove(addressToDelete);
         } else {
-            throw new GenericExceptionHandler(HttpStatus.NOT_FOUND,ErrorCode.ADDRESS_NOT_FOUND,"Address Not Found.");
+            throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
         }
         UserDto updatedUser = userService.save(user);
-        return updatedUser;
+        return addressDtoConverter.convert(addressToDelete);
     }
-    public UserDto updateAddress(UpdateAddressRequestDto from) {
+
+    public AddressDto updateAddress(UpdateAddressRequestDto from) {
         User user = userService.getUserByUserId(from.getUserId());
 
         Address addressToUpdate = null;
@@ -96,8 +101,9 @@ public class AddressService {
         }
 
         UserDto updatedUser = userService.save(user);
-        return updatedUser;
+        return addressDtoConverter.convert(addressToUpdate);
     }
+
     public AddressDto getAddress(GetAddressRequestDto from) {
         User user = userService.getUserByUserId(from.getUserId());
 
@@ -110,11 +116,12 @@ public class AddressService {
                 }
             }
             return addressDtoConverter.convert(addressRequest);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
 
         }
     }
+
     public List<AddressDto> getAllAddress(String userId) {
         User user = userService.getUserByUserId(userId);
         return user.getAddresses().stream().map(address -> addressDtoConverter.convert(address)).collect(Collectors.toList());

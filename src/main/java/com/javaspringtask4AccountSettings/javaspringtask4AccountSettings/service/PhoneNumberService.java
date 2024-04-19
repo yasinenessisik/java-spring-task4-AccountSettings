@@ -1,18 +1,12 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service;
 
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.AddressDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.PhoneNumberDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.converter.PhoneNumberDtoConverter;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.DeleteAddressRequestDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.GetAddressRequestDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.SaveAddressRequestDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.UpdateAddressRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.phonenumber.DeletePhoneNumberRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.phonenumber.SavePhoneNumberRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.ErrorCode;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Address;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.PhoneNumber;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.PhoneNumberRepository;
@@ -33,21 +27,23 @@ public class PhoneNumberService {
         this.phoneNumberRepository = phoneNumberRepository;
         this.userService = userService;
     }
-    public List<PhoneNumber> saveAllPhoneNumber(List<PhoneNumber> phoneNumber){
+
+    public List<PhoneNumber> saveAllPhoneNumber(List<PhoneNumber> phoneNumber) {
         return phoneNumberRepository.saveAll(phoneNumber);
     }
-    public UserDto savePhoneNumber(SavePhoneNumberRequest from){
-        User user = userService.getUserByUserId(from.getUserId());
 
-        user.getPhoneNumbers().add(new PhoneNumber(
+    public PhoneNumberDto savePhoneNumber(SavePhoneNumberRequest from) {
+        User user = userService.getUserByUserId(from.getUserId());
+        PhoneNumber phoneNumber = new PhoneNumber(
                 from.getPhoneNumber(),
-                user
-        ));
+                user);
+        user.getPhoneNumbers().add(phoneNumber);
 
         UserDto updatedUser = userService.save(user);
-        return updatedUser;
+        return phoneNumberDtoConverter.convert(phoneNumber);
     }
-    public UserDto deletePhoneNumber(DeletePhoneNumberRequest from) {
+
+    public PhoneNumberDto deletePhoneNumber(DeletePhoneNumberRequest from) {
         User user = userService.getUserByUserId(from.getUserId());
 
         PhoneNumber phoneNumberToDelete = null;
@@ -61,12 +57,13 @@ public class PhoneNumberService {
         if (phoneNumberToDelete != null) {
             user.getPhoneNumbers().remove(phoneNumberToDelete);
         } else {
-            throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND,"Address Not Found.");
+            throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
         }
 
         UserDto updatedUser = userService.save(user);
-        return updatedUser;
+        return phoneNumberDtoConverter.convert(phoneNumberToDelete);
     }
+
     public List<PhoneNumberDto> getAllPhoneNumber(String userId) {
         User user = userService.getUserByUserId(userId);
         return user.getPhoneNumbers().stream().map(phoneNumber -> phoneNumberDtoConverter.convert(phoneNumber)).collect(Collectors.toList());

@@ -21,19 +21,20 @@ public class NotificationService {
         this.notificationDtoConverter = notificationDtoConverter;
     }
 
-    public void saveNotification(Notification notification){
+    public void saveNotification(Notification notification) {
         notificationRepository.save(notification);
     }
-    public UserDto changeNotifications(ChangeNotificationSettingsRequest changeNotificationSettingsRequest) {
-        User user = userService.getUserByUserId(changeNotificationSettingsRequest.getUserId());
 
-        user.setEnabledNotification(changeNotificationSettingsRequest.getEnableNotifications());
-        user.getNotification().setAccountBalanceUpdate(changeNotificationSettingsRequest.getAccountBalanceUpdates());
-        user.getNotification().setSecurityAlert(changeNotificationSettingsRequest.getSecurityAlerts());
-        user.getNotification().setTranscationUpdate(changeNotificationSettingsRequest.getTransactionAlerts());
+    public NotificationDto changeNotifications(ChangeNotificationSettingsRequest from) {
+        User user = userService.getUserByUserId(from.getUserId());
+
+        user.setEnabledNotification(from.getEnableNotifications());
+
+        Notification notification = new Notification(from.getAccountBalanceUpdates(), from.getSecurityAlerts(), from.getTransactionAlerts(), user);
+        user.setNotification(notification);
 
         UserDto updatedUser = userService.save(user);
-        return updatedUser;
+        return updatedUser.getNotificationDto();
     }
 
     public NotificationDto getNotification(String userId) {

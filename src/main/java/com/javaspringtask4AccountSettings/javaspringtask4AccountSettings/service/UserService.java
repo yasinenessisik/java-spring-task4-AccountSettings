@@ -2,11 +2,9 @@ package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.servic
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.converter.UserDtoConverter;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeNotificationSettingsRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeTwoFactorAuthRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.password.ChangePasswordRequest;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.profile.ChangeProfileRequest;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.register.*;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.register.UserRegisterRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.ErrorCode;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.*;
@@ -34,6 +32,7 @@ public class UserService {
                 .errorMessage("User Not Found.")
                 .build());
     }
+
     @Transactional
     public UserDto saveUser(UserRegisterRequest userRegisterRequest) {
         Boolean twoFactorAuth = userRegisterRequest.getTwoFactorAuth();
@@ -59,18 +58,18 @@ public class UserService {
         user.setUserProfile(userProfile);
 
         List<Email> emails = userRegisterRequest.getEmails().stream()
-                .map(emailDto -> new Email(emailDto.getEmail(),user))
+                .map(emailDto -> new Email(emailDto.getEmail(), user))
                 .collect(Collectors.toList());
         user.setEmails(emails);
 
         List<Address> addresses = userRegisterRequest.getAddresses().stream()
-                .map(addressDto -> new Address(addressDto.getStreet(), addressDto.getCity(), addressDto.getPostalCode(), addressDto.getCountry(),user))
+                .map(addressDto -> new Address(addressDto.getStreet(), addressDto.getCity(), addressDto.getPostalCode(), addressDto.getCountry(), user))
                 .collect(Collectors.toList());
         user.setAddresses(addresses);
 
 
         List<PhoneNumber> phoneNumbers = userRegisterRequest.getPhoneNumbers().stream()
-                .map(phoneNumberDto -> new PhoneNumber(phoneNumberDto.getPhoneNumber(),user))
+                .map(phoneNumberDto -> new PhoneNumber(phoneNumberDto.getPhoneNumber(), user))
                 .collect(Collectors.toList());
         user.setPhoneNumbers(phoneNumbers);
 
@@ -85,11 +84,11 @@ public class UserService {
         return userDtoConverter.convert(newUser);
     }
 
-    public UserDto changePassword(ChangePasswordRequest changePasswordRequest){
+    public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
 
         User user = userRepository.findByUserId(changePasswordRequest.getUserId());
 
-        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             throw GenericExceptionHandler.builder()
                     .errorMessage("Current passwords doesn't match")
                     .httpStatus(HttpStatus.BAD_REQUEST)
@@ -97,7 +96,7 @@ public class UserService {
                     .build();
         }
 
-        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())){
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
             throw GenericExceptionHandler.builder()
                     .errorMessage("New password don't match")
                     .httpStatus(HttpStatus.BAD_REQUEST)
@@ -112,7 +111,7 @@ public class UserService {
     }
 
     public List<UserDto> getAllUser() {
-        return userRepository.findAll().stream().map(user ->{
+        return userRepository.findAll().stream().map(user -> {
             return userDtoConverter.convert(user);
         }).collect(Collectors.toList());
     }
@@ -130,7 +129,7 @@ public class UserService {
     public UserDto save(User user) {
         try {
             return userDtoConverter.convert(userRepository.save(user));
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw GenericExceptionHandler.builder()
                     .errorCode(ErrorCode.SOMETHING_WRONG_WHILE_SAVING)
                     .httpStatus(HttpStatus.CONFLICT)

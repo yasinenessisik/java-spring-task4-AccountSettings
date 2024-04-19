@@ -7,6 +7,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.req
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.SaveAddressRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.UpdateAddressRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.AddressService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,24 +22,24 @@ public class AddressController {
     }
 
     @PatchMapping("updateAddress")
-    public UserDto updateAddress(@RequestBody UpdateAddressRequestDto from) {
-        return addressService.updateAddress(from);
+    public ResponseEntity<AddressDto>  updateAddress(@RequestBody UpdateAddressRequestDto from) {
+        return ResponseEntity.ok(addressService.updateAddress(from));
     }
     @DeleteMapping("deleteAddress")
-    public UserDto updateAddress(@RequestBody DeleteAddressRequestDto from) {
-        return addressService.deleteAddress(from);
+    public ResponseEntity<AddressDto>  updateAddress(@RequestBody DeleteAddressRequestDto from) {
+        return ResponseEntity.ok(addressService.deleteAddress(from));
     }
 
     @PostMapping("saveAddress")
-    public UserDto saveAddress(@RequestBody SaveAddressRequestDto saveAddressRequestDto){
-        return addressService.saveAddress(saveAddressRequestDto);
+    public ResponseEntity<AddressDto> saveAddress(@RequestBody SaveAddressRequestDto saveAddressRequestDto){
+        return ResponseEntity.ok(addressService.saveAddress(saveAddressRequestDto));
     }
     @PostMapping("getAddress")
-    public AddressDto getAddress(@RequestBody GetAddressRequestDto getAddressRequestDto){
-        return addressService.getAddress(getAddressRequestDto);
+    public ResponseEntity<AddressDto> getAddress(@RequestBody GetAddressRequestDto getAddressRequestDto){
+        return ResponseEntity.ok(addressService.getAddress(getAddressRequestDto));
     }
     @GetMapping("/{userId}/getAllAddress")
-    public List<AddressDto> getAllAddress(@PathVariable String userId) {
-        return addressService.getAllAddress(userId);
+    public ResponseEntity<List<AddressDto>> getAllAddress(@PathVariable String userId) {
+        return ResponseEntity.ok(addressService.getAllAddress(userId));
     }
 }

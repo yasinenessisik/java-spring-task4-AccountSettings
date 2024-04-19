@@ -1,13 +1,10 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.controller;
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.EmailDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.PhoneNumberDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.email.DeleteEmailRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.email.SaveEmailRequest;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.phonenumber.DeletePhoneNumberRequest;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.phonenumber.SavePhoneNumberRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.EmailService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,13 +20,13 @@ public class EmailController {
 
 
     @DeleteMapping("deleteEmail")
-    public UserDto deleteEmail(@RequestBody DeleteEmailRequest from) {
-        return emailService.deleteEmail(from);
+    public ResponseEntity<EmailDto>  deleteEmail(@RequestBody DeleteEmailRequest from) {
+        return ResponseEntity.ok(emailService.deleteEmail(from));
     }
 
     @PostMapping("saveEmail")
-    public UserDto saveEmail(@RequestBody SaveEmailRequest from){
-        return emailService.saveEmail(from);
+    public ResponseEntity<EmailDto> saveEmail(@RequestBody SaveEmailRequest from){
+        return ResponseEntity.ok(emailService.saveEmail(from));
     }
     @GetMapping("/{userId}/getAllPhoneNumber")
     public List<EmailDto> getAllEmail(@PathVariable String userId) {
