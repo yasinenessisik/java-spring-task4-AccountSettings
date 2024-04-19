@@ -68,12 +68,15 @@ public class UserService {
         List<Address> addresses = addressDtos.stream()
                 .map(addressDto -> new Address(addressDto.getStreet(), addressDto.getCity(), addressDto.getPostalCode(), addressDto.getCountry()))
                 .collect(Collectors.toList());
+        addressService.saveAllAddress(addresses);
+
         user.setAddresses(addresses);
 
         List<PhoneNumberRequest> phoneNumberDtos = userRegisterRequest.getPhoneNumbers();
         List<PhoneNumber> phoneNumbers = phoneNumberDtos.stream()
                 .map(phoneNumberDto -> new PhoneNumber(phoneNumberDto.getPhoneNumber()))
                 .collect(Collectors.toList());
+        phoneNumberService.saveAllPhoneNumber(phoneNumbers);
         user.setPhoneNumbers(phoneNumbers);
 
         User newUser = userRepository.save(user);
