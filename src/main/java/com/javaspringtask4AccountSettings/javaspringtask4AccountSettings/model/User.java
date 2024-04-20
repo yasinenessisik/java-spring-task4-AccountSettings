@@ -19,9 +19,12 @@ public class User extends BaseEntity{
     private String userId;
 
     private String firstName;
+
     private String lastName;
 
     private String password;
+
+    private String profilePhotoPath;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
