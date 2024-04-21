@@ -22,6 +22,7 @@ public class UserDtoConverter {
                 .firstName(from.getFirstName())
                 .lastName(from.getLastName())
                 .password(from.getPassword())
+                .profilePhotoPath(from.getProfilePhotoPath())
                 .emails(from.getEmails().stream().map(email -> emailDtoConverter.convert(email)).collect(Collectors.toList()))
                 .addresses(from.getAddresses().stream().map(address -> addressDtoConverter.convert(address)).collect(Collectors.toList()))
                 .userProfile(userProfileDtoConverter.convert(from.getUserProfile()))

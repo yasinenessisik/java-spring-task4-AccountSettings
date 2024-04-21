@@ -10,18 +10,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.io.Serializable;
 import java.util.List;
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserDto{
     private String userId;
 
     private String firstName;
 
     private String lastName;
-
+    private String profilePhotoPath;
     private String password;
 
     private List<EmailDto> emails;

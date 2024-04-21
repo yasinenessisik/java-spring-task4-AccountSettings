@@ -11,7 +11,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Address;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.AddressRepository;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.AddressRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 

@@ -49,6 +49,15 @@ public class User extends BaseEntity{
 
     private Boolean isEnabledNotification;
 
+
+    public String getProfilePhotoPath() {
+        return profilePhotoPath;
+    }
+
+    public void setProfilePhotoPath(String profilePhotoPath) {
+        this.profilePhotoPath = profilePhotoPath;
+    }
+
     public String getFirstName() {
         return firstName;
     }

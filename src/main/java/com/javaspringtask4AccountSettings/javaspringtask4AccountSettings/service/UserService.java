@@ -8,14 +8,18 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.req
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.ErrorCode;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.*;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.UserRepository;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,23 +29,26 @@ public class UserService {
     private final UserDtoConverter userDtoConverter;
     private final PasswordEncoder passwordEncoder;
 
-    protected User getUserByUserId(String userId) {
+    @Cacheable(value = "cacheNames",key = "#userId")
+    public User getUserByUserId(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> GenericExceptionHandler.builder()
                 .errorCode(ErrorCode.USER_NOT_FOUND)
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .errorMessage("User Not Found.")
                 .build());
     }
-
+    @CachePut(value = "users", key = "#id")
     @Transactional
     public UserDto saveUser(UserRegisterRequest userRegisterRequest) {
         Boolean twoFactorAuth = userRegisterRequest.getTwoFactorAuth();
         Boolean isEnabledNotification = userRegisterRequest.getIsEnabledNotification();
         String firstName = userRegisterRequest.getFirstName();
         String lastName = userRegisterRequest.getLastName();
+        String uniquePath = UUID.randomUUID().toString();
 
         User user = new User();
 
+        user.setProfilePhotoPath(uniquePath+".jpg");
         user.setPassword(passwordEncoder.encode(userRegisterRequest.getPassword()));
         user.setTwoFactorAuth(twoFactorAuth);
         user.setEnabledNotification(isEnabledNotification);
@@ -81,7 +88,8 @@ public class UserService {
         );
         user.setNotification(userNotification);
         User newUser = userRepository.save(user);
-        return userDtoConverter.convert(newUser);
+        UserDto convert = userDtoConverter.convert(newUser);
+        return convert;
     }
 
     public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
@@ -109,7 +117,7 @@ public class UserService {
         User updatedUser = userRepository.save(user);
         return userDtoConverter.convert(updatedUser);
     }
-
+    @Cacheable(cacheNames = "users")
     public List<UserDto> getAllUser() {
         return userRepository.findAll().stream().map(user -> {
             return userDtoConverter.convert(user);
@@ -125,10 +133,12 @@ public class UserService {
 
         return userDtoConverter.convert(updatedUser);
     }
-
+    @CacheEvict(value = "users", allEntries = true)
     public UserDto save(User user) {
         try {
-            return userDtoConverter.convert(userRepository.save(user));
+            User save = userRepository.save(user);
+            UserDto convert = userDtoConverter.convert(save);
+            return convert;
         } catch (Exception ex) {
             throw GenericExceptionHandler.builder()
                     .errorCode(ErrorCode.SOMETHING_WRONG_WHILE_SAVING)

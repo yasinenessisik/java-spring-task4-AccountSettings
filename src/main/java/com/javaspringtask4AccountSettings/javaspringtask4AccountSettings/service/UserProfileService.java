@@ -6,7 +6,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.con
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.profile.ChangeProfileRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.UserProfile;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.UserProfileRepository;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.UserProfileRepository;
 import org.springframework.stereotype.Service;
 
 @Service

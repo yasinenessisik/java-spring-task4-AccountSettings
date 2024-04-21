@@ -6,7 +6,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.con
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeNotificationSettingsRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Notification;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.NotificationRepository;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.NotificationRepository;
 import org.springframework.stereotype.Service;
 
 @Service

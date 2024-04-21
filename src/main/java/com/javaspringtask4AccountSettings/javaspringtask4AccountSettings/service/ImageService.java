@@ -2,7 +2,8 @@ package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.servic
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.config.StorageConfig;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.ImageData;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.ImageRepository;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.ImageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,15 +18,18 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
     private final StorageConfig storageConfig;
+    private final UserService userService;
 
-    public ImageService(ImageRepository imageRepository, StorageConfig storageConfig) {
+    public ImageService(ImageRepository imageRepository, StorageConfig storageConfig, UserService userService) {
         this.imageRepository = imageRepository;
         this.storageConfig = storageConfig;
+        this.userService = userService;
     }
 
 
-    public String uploadImageToFileSystem(MultipartFile file) throws IOException {
-        String fileName = file.getOriginalFilename();
+    public String uploadImageToFileSystem(String userId, MultipartFile file) throws IOException {
+        User user = userService.getUserByUserId(userId);
+        String fileName = user.getProfilePhotoPath().trim();
         String filePath = storageConfig.folderPath() + File.separator + fileName;
         ImageData fileData = imageRepository.save(ImageData.builder()
                 .name(fileName)
@@ -40,17 +44,19 @@ public class ImageService {
         file.transferTo(new File(filePath));
 
         if (fileData != null) {
-            return "file uploaded successfully : " + filePath;
+            return "file uploaded successfully: " + filePath;
         }
         return null;
     }
 
-    public byte[] downloadImageFromFileSystem(String fileName) throws IOException {
-        Optional<ImageData> fileData = imageRepository.findByName(fileName);
+    public byte[] downloadImageFromFileSystem(String userId) throws IOException {
+        User user = userService.getUserByUserId(userId);
+        Optional<ImageData> fileData = imageRepository.findByName(user.getProfilePhotoPath());
         String filePath=fileData.get().getImagePath();
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
         return images;
     }
+
     public String updateImageInFileSystem(String fileName, MultipartFile newFile) throws IOException {
         Optional<ImageData> fileData = imageRepository.findByName(fileName);
         if (fileData.isPresent()) {
@@ -66,5 +72,11 @@ public class ImageService {
         } else {
             return "file not found : " + fileName;
         }
+    }
+    private String getFileExtension(String filename) {
+        if (filename != null && filename.lastIndexOf(".") != -1) {
+            return filename.substring(filename.lastIndexOf("."));
+        }
+        return "";
     }
 }

@@ -2,12 +2,16 @@ package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 @MappedSuperclass
+@Data
+@ToString
 public abstract class BaseEntity implements Serializable {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

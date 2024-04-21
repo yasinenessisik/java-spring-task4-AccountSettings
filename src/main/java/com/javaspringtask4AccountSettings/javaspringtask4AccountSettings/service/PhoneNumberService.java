@@ -9,7 +9,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.PhoneNumber;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.PhoneNumberRepository;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.PhoneNumberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 

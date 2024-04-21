@@ -1,4 +1,4 @@
-package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository;
+package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository;
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
