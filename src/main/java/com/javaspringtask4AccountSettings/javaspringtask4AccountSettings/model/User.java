@@ -2,7 +2,6 @@ package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(generator = "UUID")

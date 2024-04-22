@@ -41,7 +41,7 @@ public class UserService {
 
 
     @Transactional
-    public User saveUser(UserRegisterRequest userRegisterRequest) {
+    public UserDto saveUser(UserRegisterRequest userRegisterRequest) {
 
         Boolean twoFactorAuth = userRegisterRequest.getTwoFactorAuth();
         Boolean isEnabledNotification = userRegisterRequest.getIsEnabledNotification();
@@ -90,14 +90,14 @@ public class UserService {
                 user
         );
         user.setNotification(userNotification);
-        User newUser = userRepository.save(user);
-        return newUser;
+        User newUser = save(user);
+        return userDtoConverter.convert(newUser);
     }
 
     public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
 
         User user = userRepository.findByUserId(changePasswordRequest.getUserId());
-
+        System.out.println(user.toString());
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             throw GenericExceptionHandler.builder()
                     .errorMessage("Current passwords doesn't match")
@@ -134,7 +134,7 @@ public class UserService {
         return userDtoConverter.convert(updatedUser);
     }
 
-    @CachePut(value = "users", key = "#user.userId")
+    @CachePut(value = "users",key = "#user.firstName")
     public User save(User user) {
         try {
             User save = userRepository.save(user);
@@ -148,22 +148,25 @@ public class UserService {
         }
 
     }
+
+
     @Cacheable(CacheNames.USER)
     public List<User> getAllUserWithCache() {
         return null;
     }
 
-    @Cacheable(value = "users",key = "#getByIdWithCache")
-    public User getByIdWithCache(String getByIdWithCache) {
+    @Cacheable(value = "users",key = "#name")
+    public User getByIdWithCache(String name) {
         return null;
     }
+
     @Caching(
             evict = {
                     @CacheEvict(value = CacheNames.USER, allEntries = true),
                     @CacheEvict(value = "users",allEntries = true)
             }
     )
-    public Void resetCache(){
-        return null;
+    public void resetCache(){
+
     }
 }

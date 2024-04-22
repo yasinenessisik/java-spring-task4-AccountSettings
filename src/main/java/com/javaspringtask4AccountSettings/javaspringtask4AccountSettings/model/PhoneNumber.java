@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Entity
 @NoArgsConstructor
-public class PhoneNumber implements Serializable {
+public class PhoneNumber extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

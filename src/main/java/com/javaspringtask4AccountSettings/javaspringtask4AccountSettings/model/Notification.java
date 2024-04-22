@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @Data
-public class Notification implements Serializable {
+public class Notification extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer notificationId;

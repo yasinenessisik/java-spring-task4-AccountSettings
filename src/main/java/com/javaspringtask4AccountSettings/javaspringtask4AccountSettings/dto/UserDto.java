@@ -1,9 +1,6 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto;
 
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Address;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Email;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.PhoneNumber;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.UserProfile;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,4 +35,7 @@ public class UserDto{
     private Boolean twoFactorAuth;
 
     private Boolean isEnabledNotification;
+
+    private String createdAt;
+    private String updatedAt;
 }

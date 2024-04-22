@@ -1,12 +1,13 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.BaseEntityDto;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 
 @Entity
-public class Address implements Serializable{
+public class Address extends BaseEntity implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

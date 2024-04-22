@@ -21,7 +21,7 @@ public class UserController {
 
 
     @PostMapping("saveUser")
-    public User saveUser(@RequestBody  UserRegisterRequest userRegisterRequest){
+    public UserDto saveUser(@RequestBody  UserRegisterRequest userRegisterRequest){
         return userService.saveUser(userRegisterRequest);
     }
 
@@ -55,8 +55,8 @@ public class UserController {
     }
 
     @GetMapping("reset")
-    public Void resetCache(){
-        return userService.resetCache();
+    public void resetCache(){
+        userService.resetCache();
     }
 
 }

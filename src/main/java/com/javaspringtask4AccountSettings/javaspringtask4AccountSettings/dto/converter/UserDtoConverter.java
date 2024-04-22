@@ -5,6 +5,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.U
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Component
@@ -15,7 +16,7 @@ public class UserDtoConverter {
     private final PhoneNumberDtoConverter phoneNumberDtoConverter;
     private final NotificationDtoConverter notificationDtoConverter;
     private final AddressDtoConverter addressDtoConverter;
-
+    private final LocalDateTimeConverter localDateTimeConverter;
     public UserDto convert(User from){
         return UserDto.builder()
                 .userId(from.getUserId())
@@ -30,6 +31,8 @@ public class UserDtoConverter {
                 .notificationDto(notificationDtoConverter.convert(from.getNotification()))
                 .twoFactorAuth(from.getTwoFactorAuth())
                 .isEnabledNotification(from.getEnabledNotification())
+                .createdAt(localDateTimeConverter.convertToString(from.getCreatedDate()))
+                .updatedAt(localDateTimeConverter.convertToString(from.getModifiedDate()))
                 .build();
     }
 
