@@ -41,7 +41,7 @@ public class EmailService {
         );
         user.getEmails().add(email);
 
-        UserDto updatedUser = userService.save(user);
+        User updatedUser = userService.save(user);
         return emailDtoConverter.convert(email);
     }
 
@@ -61,7 +61,7 @@ public class EmailService {
         } else {
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.EMAIL_NOT_FOUND, "Email Not Found.");
         }
-        UserDto updatedUser = userService.save(user);
+        User updatedUser = userService.save(user);
         return emailDtoConverter.convert(emailToDelete);
     }
 

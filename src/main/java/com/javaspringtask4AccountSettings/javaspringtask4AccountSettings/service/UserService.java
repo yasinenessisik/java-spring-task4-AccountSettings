@@ -13,10 +13,9 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.util.Ca
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.ReactiveValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserDtoConverter userDtoConverter;
     private final PasswordEncoder passwordEncoder;
-
+    @Cacheable(value = "users",key = "#userId")
     public User getUserByUserId(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> GenericExceptionHandler.builder()
                 .errorCode(ErrorCode.USER_NOT_FOUND)
@@ -40,13 +39,9 @@ public class UserService {
                 .build());
     }
 
-    @Caching(
-            evict = {
-                    @CacheEvict(value = CacheNames.USER, allEntries = true)
-            }
-    )
+
     @Transactional
-    public UserDto saveUser(UserRegisterRequest userRegisterRequest) {
+    public User saveUser(UserRegisterRequest userRegisterRequest) {
 
         Boolean twoFactorAuth = userRegisterRequest.getTwoFactorAuth();
         Boolean isEnabledNotification = userRegisterRequest.getIsEnabledNotification();
@@ -96,9 +91,7 @@ public class UserService {
         );
         user.setNotification(userNotification);
         User newUser = userRepository.save(user);
-        UserDto convert = userDtoConverter.convert(newUser);
-
-        return convert;
+        return newUser;
     }
 
     public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
@@ -130,10 +123,6 @@ public class UserService {
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
-    @Cacheable(CacheNames.USER)
-    public List<User> getAllUser2() {
-       return null;
-    }
 
     public UserDto changeTwoFactorAuth(ChangeTwoFactorAuthRequest changeTwoFactorAuthRequest) {
         User user = userRepository.findByUserId(changeTwoFactorAuthRequest.getUserId());
@@ -144,16 +133,12 @@ public class UserService {
 
         return userDtoConverter.convert(updatedUser);
     }
-    @Caching(
-            evict = {
-                    @CacheEvict(value = CacheNames.USER, allEntries = true)
-            }
-    )
-    public UserDto save(User user) {
+
+    @CachePut(value = "users", key = "#user.userId")
+    public User save(User user) {
         try {
             User save = userRepository.save(user);
-            UserDto convert = userDtoConverter.convert(save);
-            return convert;
+            return save;
         } catch (Exception ex) {
             throw GenericExceptionHandler.builder()
                     .errorCode(ErrorCode.SOMETHING_WRONG_WHILE_SAVING)
@@ -163,5 +148,22 @@ public class UserService {
         }
 
     }
+    @Cacheable(CacheNames.USER)
+    public List<User> getAllUserWithCache() {
+        return null;
+    }
 
+    @Cacheable(value = "users",key = "#getByIdWithCache")
+    public User getByIdWithCache(String getByIdWithCache) {
+        return null;
+    }
+    @Caching(
+            evict = {
+                    @CacheEvict(value = CacheNames.USER, allEntries = true),
+                    @CacheEvict(value = "users",allEntries = true)
+            }
+    )
+    public Void resetCache(){
+        return null;
+    }
 }

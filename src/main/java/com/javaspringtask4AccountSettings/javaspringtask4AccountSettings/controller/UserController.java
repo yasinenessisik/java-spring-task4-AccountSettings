@@ -1,20 +1,10 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.controller;
 
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.AddressDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.DeleteAddressRequestDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.GetAddressRequestDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.SaveAddressRequestDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.UpdateAddressRequestDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeNotificationSettingsRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeTwoFactorAuthRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.password.ChangePasswordRequest;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.profile.ChangeProfileRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.register.UserRegisterRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.AddressService;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.NotificationService;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.UserProfileService;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +21,7 @@ public class UserController {
 
 
     @PostMapping("saveUser")
-    public UserDto saveUser(@RequestBody  UserRegisterRequest userRegisterRequest){
+    public User saveUser(@RequestBody  UserRegisterRequest userRegisterRequest){
         return userService.saveUser(userRegisterRequest);
     }
 
@@ -49,8 +39,24 @@ public class UserController {
     public List<User> getAllUser(){
         return userService.getAllUser();
     }
-    @GetMapping("getAll2")
-    public List<User> getAllUser2(){
-        return userService.getAllUser2();
+
+    @GetMapping("getById/{getByIdWithCache}")
+    public  User getUserById(@PathVariable String getByIdWithCache){
+        return userService.getUserByUserId(getByIdWithCache);
     }
+    @GetMapping("getAll2")
+    public List<User> getAllUserWithCache(){
+        return userService.getAllUserWithCache();
+    }
+
+    @GetMapping("getByIdWithCache/{getByIdWithCache}")
+    public User getAllUserWithCache(@PathVariable String getByIdWithCache){
+        return userService.getByIdWithCache(getByIdWithCache);
+    }
+
+    @GetMapping("reset")
+    public Void resetCache(){
+        return userService.resetCache();
+    }
+
 }

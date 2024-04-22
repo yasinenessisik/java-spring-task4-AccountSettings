@@ -39,7 +39,7 @@ public class PhoneNumberService {
                 user);
         user.getPhoneNumbers().add(phoneNumber);
 
-        UserDto updatedUser = userService.save(user);
+        User updatedUser = userService.save(user);
         return phoneNumberDtoConverter.convert(phoneNumber);
     }
 
@@ -60,7 +60,7 @@ public class PhoneNumberService {
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
         }
 
-        UserDto updatedUser = userService.save(user);
+        User updatedUser = userService.save(user);
         return phoneNumberDtoConverter.convert(phoneNumberToDelete);
     }
 

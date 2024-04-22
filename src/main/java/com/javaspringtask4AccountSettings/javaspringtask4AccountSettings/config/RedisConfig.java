@@ -44,7 +44,6 @@ public class RedisConfig{
         return builder -> {
             var userconfig = RedisCacheConfiguration.defaultCacheConfig()
                     .entryTtl(Duration.ofMinutes(60));
-
             builder.withCacheConfiguration(CacheNames.USER, userconfig);
         };
     }

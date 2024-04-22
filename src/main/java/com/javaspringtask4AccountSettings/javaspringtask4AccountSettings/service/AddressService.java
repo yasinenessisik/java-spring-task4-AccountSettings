@@ -54,7 +54,7 @@ public class AddressService {
         );
         user.getAddresses().add(address);
 
-        UserDto updatedUser = userService.save(user);
+        User updatedUser = userService.save(user);
         return addressDtoConverter.convert(address);
     }
 
@@ -74,7 +74,7 @@ public class AddressService {
         } else {
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
         }
-        UserDto updatedUser = userService.save(user);
+        User updatedUser = userService.save(user);
         return addressDtoConverter.convert(addressToDelete);
     }
 
@@ -100,7 +100,7 @@ public class AddressService {
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
         }
 
-        UserDto updatedUser = userService.save(user);
+        User updatedUser = userService.save(user);
         return addressDtoConverter.convert(addressToUpdate);
     }
 

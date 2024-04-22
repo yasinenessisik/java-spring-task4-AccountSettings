@@ -37,9 +37,9 @@ public class UserProfileService {
         newUserProfile.setMonthlyIncome(changeProfileRequest.getMonthlyIncome());
 
 
-        UserDto updatedUser = userService.save(user);
+        User updatedUser = userService.save(user);
 
-        return updatedUser.getUserProfile();
+        return userProfileDtoConverter.convert(updatedUser.getUserProfile());
     }
 
     public UserProfileDto getUserProfile(String userId) {

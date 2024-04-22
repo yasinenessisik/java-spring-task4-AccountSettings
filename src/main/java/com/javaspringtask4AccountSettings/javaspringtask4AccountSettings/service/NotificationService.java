@@ -33,8 +33,8 @@ public class NotificationService {
         Notification notification = new Notification(from.getAccountBalanceUpdates(), from.getSecurityAlerts(), from.getTransactionAlerts(), user);
         user.setNotification(notification);
 
-        UserDto updatedUser = userService.save(user);
-        return updatedUser.getNotificationDto();
+        User updatedUser = userService.save(user);
+        return notificationDtoConverter.convert(updatedUser.getNotification());
     }
 
     public NotificationDto getNotification(String userId) {
