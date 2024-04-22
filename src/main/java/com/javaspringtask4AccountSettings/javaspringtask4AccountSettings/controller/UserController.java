@@ -11,6 +11,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.req
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.password.ChangePasswordRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.profile.ChangeProfileRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.register.UserRegisterRequest;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.AddressService;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.NotificationService;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.UserProfileService;
@@ -45,7 +46,11 @@ public class UserController {
     }
 
     @GetMapping("getAll")
-    public List<UserDto> getAllUser(){
+    public List<User> getAllUser(){
         return userService.getAllUser();
+    }
+    @GetMapping("getAll2")
+    public List<User> getAllUser2(){
+        return userService.getAllUser2();
     }
 }

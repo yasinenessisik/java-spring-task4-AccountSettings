@@ -9,14 +9,17 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.*;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.UserRepository;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.util.CacheNames;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +32,6 @@ public class UserService {
     private final UserDtoConverter userDtoConverter;
     private final PasswordEncoder passwordEncoder;
 
-    @Cacheable(value = "cacheNames",key = "#userId")
     public User getUserByUserId(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> GenericExceptionHandler.builder()
                 .errorCode(ErrorCode.USER_NOT_FOUND)
@@ -37,9 +39,15 @@ public class UserService {
                 .errorMessage("User Not Found.")
                 .build());
     }
-    @CachePut(value = "users", key = "#id")
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = CacheNames.USER, allEntries = true)
+            }
+    )
     @Transactional
     public UserDto saveUser(UserRegisterRequest userRegisterRequest) {
+
         Boolean twoFactorAuth = userRegisterRequest.getTwoFactorAuth();
         Boolean isEnabledNotification = userRegisterRequest.getIsEnabledNotification();
         String firstName = userRegisterRequest.getFirstName();
@@ -89,6 +97,7 @@ public class UserService {
         user.setNotification(userNotification);
         User newUser = userRepository.save(user);
         UserDto convert = userDtoConverter.convert(newUser);
+
         return convert;
     }
 
@@ -117,11 +126,13 @@ public class UserService {
         User updatedUser = userRepository.save(user);
         return userDtoConverter.convert(updatedUser);
     }
-    @Cacheable(cacheNames = "users")
-    public List<UserDto> getAllUser() {
-        return userRepository.findAll().stream().map(user -> {
-            return userDtoConverter.convert(user);
-        }).collect(Collectors.toList());
+    @Cacheable(CacheNames.USER)
+    public List<User> getAllUser() {
+        return userRepository.findAll();
+    }
+    @Cacheable(CacheNames.USER)
+    public List<User> getAllUser2() {
+       return null;
     }
 
     public UserDto changeTwoFactorAuth(ChangeTwoFactorAuthRequest changeTwoFactorAuthRequest) {
@@ -133,7 +144,11 @@ public class UserService {
 
         return userDtoConverter.convert(updatedUser);
     }
-    @CacheEvict(value = "users", allEntries = true)
+    @Caching(
+            evict = {
+                    @CacheEvict(value = CacheNames.USER, allEntries = true)
+            }
+    )
     public UserDto save(User user) {
         try {
             User save = userRepository.save(user);

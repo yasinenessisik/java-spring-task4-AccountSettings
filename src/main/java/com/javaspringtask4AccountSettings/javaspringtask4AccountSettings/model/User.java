@@ -2,16 +2,16 @@ package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
-import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-@ToString
-public class User extends BaseEntity{
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -35,6 +35,7 @@ public class User extends BaseEntity{
     private List<Address> addresses;
 
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnore
     private UserProfile userProfile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -42,7 +43,7 @@ public class User extends BaseEntity{
     private List<PhoneNumber> phoneNumbers;
 
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @JsonIgnore
     private Notification notification;
 
     private Boolean twoFactorAuth;

@@ -1,11 +1,12 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 
 @Entity
-public class Address extends BaseEntity implements Serializable {
+public class Address implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,7 @@ public class Address extends BaseEntity implements Serializable {
     private String country;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name ="userId")
     private User user;
 
     public Address(String street, String city, String postalCode, String country,User user) {

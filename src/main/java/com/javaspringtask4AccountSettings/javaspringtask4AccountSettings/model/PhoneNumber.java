@@ -1,11 +1,14 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Entity
 @NoArgsConstructor
-public class PhoneNumber extends BaseEntity {
+public class PhoneNumber implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

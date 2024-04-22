@@ -1,12 +1,14 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-public class UserProfile extends BaseEntity{
+public class UserProfile implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userProfileId;
@@ -20,7 +22,7 @@ public class UserProfile extends BaseEntity{
 
     private String profession;
     @OneToOne(mappedBy = "userProfile")
-    @JoinColumn(name = "userId")
+    @JoinColumn(name ="userId")
     private User user;
 
     public UserProfile(String profileImageUrl, BigDecimal monthlyIncome, EducationLevel educationLevel, String profession) {
