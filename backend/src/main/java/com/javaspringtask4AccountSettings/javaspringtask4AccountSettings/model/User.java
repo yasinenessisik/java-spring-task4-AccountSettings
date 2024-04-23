@@ -41,7 +41,7 @@ public class User extends BaseEntity implements Serializable {
     @JsonIgnore
     private List<PhoneNumber> phoneNumbers;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
     private Notification notification;
 

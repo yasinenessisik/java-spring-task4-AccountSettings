@@ -16,8 +16,6 @@ import java.math.BigDecimal;
 public class UserProfileDto {
     private Integer userProfileId;
 
-    private String profileImageUrl;
-
     private BigDecimal monthlyIncome;
 
     private EducationLevel educationLevel;

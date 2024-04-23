@@ -4,12 +4,13 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.Not
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserProfileDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeNotificationSettingsRequest;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.response.ChangeNotificationResponseDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/controller/notificationController")
+@RequestMapping("api/v1/controller/notification")
 public class NotificationController {
     private final NotificationService notificationService;
 
@@ -17,11 +18,11 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
     @PatchMapping("changeNotifications")
-    public ResponseEntity<NotificationDto> changeNotifications(@RequestBody ChangeNotificationSettingsRequest changeNotificationSettingsRequest){
+    public ResponseEntity<ChangeNotificationResponseDto> changeNotifications(@RequestBody ChangeNotificationSettingsRequest changeNotificationSettingsRequest){
         return ResponseEntity.ok(notificationService.changeNotifications(changeNotificationSettingsRequest));
     }
     @GetMapping("/{userId}/getNotification")
-    public NotificationDto getNotification(@PathVariable String userId) {
-        return notificationService.getNotification(userId);
+    public ResponseEntity<ChangeNotificationResponseDto> getNotification(@PathVariable String userId) {
+        return ResponseEntity.ok(notificationService.getNotification(userId));
     }
 }

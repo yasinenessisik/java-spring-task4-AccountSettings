@@ -31,7 +31,6 @@ public class UserProfileService {
 
         UserProfile newUserProfile = user.getUserProfile();
 
-        newUserProfile.setProfileImageUrl(changeProfileRequest.getProfileImageUrl());
         newUserProfile.setProfession(changeProfileRequest.getProfession());
         newUserProfile.setEducationLevel(changeProfileRequest.getEducationLevel());
         newUserProfile.setMonthlyIncome(changeProfileRequest.getMonthlyIncome());

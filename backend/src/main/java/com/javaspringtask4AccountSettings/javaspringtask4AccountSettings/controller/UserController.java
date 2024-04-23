@@ -4,8 +4,11 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.Use
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeTwoFactorAuthRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.password.ChangePasswordRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.register.UserRegisterRequest;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.response.TwoFactoAuthResponse;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.response.UserResponse;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +34,12 @@ public class UserController {
     }
 
     @PatchMapping("changeTwoFactorAuth")
-    public UserDto changeNotifications(@RequestBody ChangeTwoFactorAuthRequest changeTwoFactorAuthRequest){
+    public UserDto changeFactorAuth(@RequestBody ChangeTwoFactorAuthRequest changeTwoFactorAuthRequest){
         return userService.changeTwoFactorAuth(changeTwoFactorAuthRequest);
+    }
+    @GetMapping("getTwoFactorAuth/{userId}")
+    public ResponseEntity<TwoFactoAuthResponse> getFactorAuth(@PathVariable String userId){
+        return ResponseEntity.ok(userService.getTwoFactorAuth(userId));
     }
 
     @GetMapping("getAll")
@@ -58,5 +65,8 @@ public class UserController {
     public void resetCache(){
         userService.resetCache();
     }
-
+    @GetMapping("getByIdMain/{userId}")
+    public UserResponse getByIdMain(@PathVariable String userId){
+        return userService.getUserByUserIdMainScreen(userId);
+    }
 }

@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 public class ChangeProfileRequest {
     private String userId;
 
-    private String profileImageUrl;
-
     private BigDecimal monthlyIncome;
 
     private EducationLevel educationLevel;

@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/api/v1/controller/image")
 public class ImageController {
 
     private final ImageService service;
@@ -33,9 +33,9 @@ public class ImageController {
                 .body(imageData);
 
     }
-    @PutMapping("/fileSystem/{profilePhotoPath}")
-    public ResponseEntity<?> updateImageInFileSystem(@PathVariable String profilePhotoPath, @RequestParam("image") MultipartFile newFile) throws IOException {
-        String updateResult = service.updateImageInFileSystem(profilePhotoPath, newFile);
+    @PostMapping("/fileSystema/{userId}")
+    public ResponseEntity<?> updateImageInFileSystem(@PathVariable String userId, @RequestParam("file") MultipartFile file) throws IOException {
+        String updateResult = service.updateImageInFileSystem(userId, file);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(updateResult);
     }

@@ -10,6 +10,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.req
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.phonenumber.DeletePhoneNumberRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.phonenumber.SavePhoneNumberRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.PhoneNumberService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class PhoneNumberController {
     }
 
     @PostMapping("savePhoneNumber")
-    public ResponseEntity<PhoneNumberDto> savePhoneNumber(@RequestBody SavePhoneNumberRequest savePhoneNumberRequest){
+    public ResponseEntity<PhoneNumberDto> savePhoneNumber(@Valid @RequestBody SavePhoneNumberRequest savePhoneNumberRequest){
         return ResponseEntity.ok(phoneNumberService.savePhoneNumber(savePhoneNumberRequest));
     }
     @GetMapping("/{userId}/getAllPhoneNumber")

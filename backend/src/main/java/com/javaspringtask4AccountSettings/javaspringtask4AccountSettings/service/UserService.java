@@ -5,6 +5,8 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.con
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeTwoFactorAuthRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.password.ChangePasswordRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.register.UserRegisterRequest;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.response.TwoFactoAuthResponse;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.response.UserResponse;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.ErrorCode;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.*;
@@ -167,5 +169,21 @@ public class UserService {
             })
     public void resetCache(){
 
+    }
+
+    public UserResponse getUserByUserIdMainScreen(String userId) {
+        User user = userRepository.findByUserId(userId);
+        return UserResponse.builder()
+                .userId(user.getUserId())
+                .name(user.getFirstName())
+                .surname(user.getLastName())
+                .build();
+    }
+
+    public TwoFactoAuthResponse getTwoFactorAuth(String userId) {
+        User user = userRepository.findByUserId(userId);
+        return TwoFactoAuthResponse.builder()
+                .twoFactorAuth(user.getTwoFactorAuth())
+                .build();
     }
 }

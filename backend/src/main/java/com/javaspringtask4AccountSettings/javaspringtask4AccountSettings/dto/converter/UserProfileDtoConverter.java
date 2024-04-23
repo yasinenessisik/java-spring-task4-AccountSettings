@@ -11,7 +11,6 @@ public class UserProfileDtoConverter {
         return UserProfileDto.builder()
                 .userProfileId(from.getUserProfileId())
                 .educationLevel(from.getEducationLevel())
-                .profileImageUrl(from.getProfileImageUrl())
                 .monthlyIncome(from.getMonthlyIncome())
                 .profession(from.getProfession())
                 .build();

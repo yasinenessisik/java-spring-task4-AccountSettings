@@ -4,6 +4,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.config.
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.ImageData;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.ImageRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,7 @@ import java.nio.file.Files;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ImageService {
 
 
@@ -57,20 +59,22 @@ public class ImageService {
         return images;
     }
 
-    public String updateImageInFileSystem(String fileName, MultipartFile newFile) throws IOException {
-        Optional<ImageData> fileData = imageRepository.findByName(fileName);
+    public String updateImageInFileSystem(String userId, MultipartFile newFile) throws IOException {
+        User user = userService.getUserByUserId(userId);
+        Optional<ImageData> fileData = imageRepository.findByName(user.getProfilePhotoPath());
         if (fileData.isPresent()) {
             String filePath = fileData.get().getImagePath();
             File oldFile = new File(filePath);
             if (oldFile.exists()) {
                 oldFile.delete();
                 newFile.transferTo(new File(filePath));
-                return "file updated successfully : " + fileName;
+
+                return "file updated successfully : " + userId;
             } else {
-                return "file does not exist : " + fileName;
+                return uploadImageToFileSystem(userId,newFile);
             }
         } else {
-            return "file not found : " + fileName;
+            return "file not found : " + userId;
         }
     }
     private String getFileExtension(String filename) {

@@ -37,5 +37,6 @@ public class UserDto{
     private Boolean isEnabledNotification;
 
     private String createdAt;
+
     private String updatedAt;
 }

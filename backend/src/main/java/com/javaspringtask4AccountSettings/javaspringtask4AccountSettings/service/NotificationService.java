@@ -4,6 +4,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.Not
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.converter.NotificationDtoConverter;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeNotificationSettingsRequest;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.response.ChangeNotificationResponseDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Notification;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.NotificationRepository;
@@ -21,24 +22,23 @@ public class NotificationService {
         this.notificationDtoConverter = notificationDtoConverter;
     }
 
-    public void saveNotification(Notification notification) {
-        notificationRepository.save(notification);
-    }
 
-    public NotificationDto changeNotifications(ChangeNotificationSettingsRequest from) {
+
+    public ChangeNotificationResponseDto changeNotifications(ChangeNotificationSettingsRequest from) {
         User user = userService.getUserByUserId(from.getUserId());
 
+        Notification notification = new Notification(from.getAccountBalanceUpdates(), from.getTransactionAlerts(), from.getSecurityAlerts(), user);
+        notificationRepository.deleteById(user.getNotification().getNotificationId());
         user.setEnabledNotification(from.getEnableNotifications());
 
-        Notification notification = new Notification(from.getAccountBalanceUpdates(), from.getSecurityAlerts(), from.getTransactionAlerts(), user);
         user.setNotification(notification);
 
         User updatedUser = userService.save(user);
-        return notificationDtoConverter.convert(updatedUser.getNotification());
+        return notificationDtoConverter.convert(updatedUser.getNotification(),updatedUser.getEnabledNotification());
     }
 
-    public NotificationDto getNotification(String userId) {
+    public ChangeNotificationResponseDto getNotification(String userId) {
         User user = userService.getUserByUserId(userId);
-        return notificationDtoConverter.convert(user.getNotification());
+        return notificationDtoConverter.convert(user.getNotification(),user.getEnabledNotification());
     }
 }
