@@ -62,6 +62,7 @@ public class EmailService {
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.EMAIL_NOT_FOUND, "Email Not Found.");
         }
         User updatedUser = userService.save(user);
+        emailRepository.delete(emailToDelete);
         return emailDtoConverter.convert(emailToDelete);
     }
 

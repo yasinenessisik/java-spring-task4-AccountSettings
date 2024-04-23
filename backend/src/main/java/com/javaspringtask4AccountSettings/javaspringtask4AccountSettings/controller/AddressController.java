@@ -7,6 +7,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.req
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.SaveAddressRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.UpdateAddressRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.AddressService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,16 +23,16 @@ public class AddressController {
     }
 
     @PatchMapping("updateAddress")
-    public ResponseEntity<AddressDto>  updateAddress(@RequestBody UpdateAddressRequestDto from) {
+    public ResponseEntity<AddressDto>  updateAddress(@Valid @RequestBody UpdateAddressRequestDto from) {
         return ResponseEntity.ok(addressService.updateAddress(from));
     }
     @DeleteMapping("deleteAddress")
-    public ResponseEntity<AddressDto>  updateAddress(@RequestBody DeleteAddressRequestDto from) {
+    public ResponseEntity<AddressDto>  deleteAddress(@Valid @RequestBody DeleteAddressRequestDto from) {
         return ResponseEntity.ok(addressService.deleteAddress(from));
     }
 
     @PostMapping("saveAddress")
-    public ResponseEntity<AddressDto> saveAddress(@RequestBody SaveAddressRequestDto saveAddressRequestDto){
+    public ResponseEntity<AddressDto> saveAddress(@Valid @RequestBody SaveAddressRequestDto saveAddressRequestDto){
         return ResponseEntity.ok(addressService.saveAddress(saveAddressRequestDto));
     }
     @PostMapping("getAddress")

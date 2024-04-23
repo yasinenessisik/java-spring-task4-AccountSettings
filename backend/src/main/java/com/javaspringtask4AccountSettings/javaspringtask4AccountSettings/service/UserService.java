@@ -119,7 +119,7 @@ public class UserService {
         User updatedUser = userRepository.save(user);
         return userDtoConverter.convert(updatedUser);
     }
-    @Cacheable(CacheNames.USER)
+    //@Cacheable(CacheNames.USER)
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
@@ -134,7 +134,7 @@ public class UserService {
         return userDtoConverter.convert(updatedUser);
     }
 
-    @CachePut(value = "users",key = "#user.firstName")
+    //@CachePut(value = "users",key = "#user.firstName")
     public User save(User user) {
         try {
             User save = userRepository.save(user);
@@ -150,12 +150,12 @@ public class UserService {
     }
 
 
-    @Cacheable(CacheNames.USER)
+   //@Cacheable(CacheNames.USER)
     public List<User> getAllUserWithCache() {
         return null;
     }
 
-    @Cacheable(value = "users",key = "#name")
+    //@Cacheable(value = "users",key = "#name")
     public User getByIdWithCache(String name) {
         return null;
     }
@@ -164,8 +164,7 @@ public class UserService {
             evict = {
                     @CacheEvict(value = CacheNames.USER, allEntries = true),
                     @CacheEvict(value = "users",allEntries = true)
-            }
-    )
+            })
     public void resetCache(){
 
     }

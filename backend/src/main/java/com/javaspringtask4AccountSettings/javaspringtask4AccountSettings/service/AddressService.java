@@ -12,6 +12,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Address;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.AddressRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class AddressService {
     private final AddressRepository addressRepository;
     private final AddressDtoConverter addressDtoConverter;
@@ -59,22 +61,23 @@ public class AddressService {
     }
 
     public AddressDto deleteAddress(DeleteAddressRequestDto from) {
+        log.info(from.getUserId());
+        log.info(String.valueOf(from.getAddressId()));
         User user = userService.getUserByUserId(from.getUserId());
-
         Address addressToDelete = null;
         for (Address address : user.getAddresses()) {
-            if (address.getAddress_Id().equals(from.getAddressId())) {
+            if (address.getAddress_Id() == from.getAddressId()) {
                 addressToDelete = address;
                 break;
             }
         }
-
         if (addressToDelete != null) {
             user.getAddresses().remove(addressToDelete);
         } else {
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
         }
         User updatedUser = userService.save(user);
+        addressRepository.delete(addressToDelete);
         return addressDtoConverter.convert(addressToDelete);
     }
 

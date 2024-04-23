@@ -61,6 +61,7 @@ public class PhoneNumberService {
         }
 
         User updatedUser = userService.save(user);
+        phoneNumberRepository.delete(phoneNumberToDelete);
         return phoneNumberDtoConverter.convert(phoneNumberToDelete);
     }
 
