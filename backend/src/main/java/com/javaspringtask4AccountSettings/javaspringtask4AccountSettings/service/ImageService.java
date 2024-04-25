@@ -1,10 +1,13 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service;
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.config.StorageConfig;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.ErrorCode;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.ImageData;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.ImageRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,6 +57,14 @@ public class ImageService {
     public byte[] downloadImageFromFileSystem(String userId) throws IOException {
         User user = userService.getUserByUserId(userId);
         Optional<ImageData> fileData = imageRepository.findByName(user.getProfilePhotoPath());
+        if (!fileData.isPresent()) {
+            throw GenericExceptionHandler.builder()
+                    .errorMessage("File Not Found.")
+                    .errorCode(ErrorCode.FILE_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
         String filePath=fileData.get().getImagePath();
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
         return images;

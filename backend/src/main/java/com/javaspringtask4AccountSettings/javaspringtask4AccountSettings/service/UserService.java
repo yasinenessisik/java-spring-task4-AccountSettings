@@ -14,6 +14,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.reposit
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.util.CacheNames;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final UserDtoConverter userDtoConverter;
@@ -97,7 +99,7 @@ public class UserService {
     }
 
     public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
-
+        log.info(changePasswordRequest.toString());
         User user = userRepository.findByUserId(changePasswordRequest.getUserId());
         System.out.println(user.toString());
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
