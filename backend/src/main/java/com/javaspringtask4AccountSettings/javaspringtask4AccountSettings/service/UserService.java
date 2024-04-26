@@ -11,6 +11,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.*;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.UserRepository;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.redisrepository.UserRedisRepository;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.util.CacheNames;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserDtoConverter userDtoConverter;
     private final PasswordEncoder passwordEncoder;
+    private final UserRedisRepository userRedisRepository;
     //@Cacheable(value = "users",key = "#userId")
     public User getUserByUserId(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> GenericExceptionHandler.builder()
@@ -119,7 +121,6 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-
         User updatedUser = userRepository.save(user);
         return userDtoConverter.convert(updatedUser);
     }
@@ -142,6 +143,8 @@ public class UserService {
     public User save(User user) {
         try {
             User save = userRepository.save(user);
+            userRedisRepository.save(new UserRedis(user.getUserId(),user.getFirstName(), 30L,new NotificationsRedis(user.getNotification().getNotificationId(),
+                    user.getNotification().getAccountBalanceUpdate(),user.getNotification().getTranscationUpdate(),user.getNotification().getSecurityAlert())));
             return save;
         } catch (Exception ex) {
             throw GenericExceptionHandler.builder()

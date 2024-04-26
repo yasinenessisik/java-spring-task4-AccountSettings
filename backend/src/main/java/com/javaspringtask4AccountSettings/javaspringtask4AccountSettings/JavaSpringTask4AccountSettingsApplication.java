@@ -9,7 +9,6 @@ import org.springframework.web.multipart.support.MultipartFilter;
 
 
 @SpringBootApplication
-@EnableCaching
 public class JavaSpringTask4AccountSettingsApplication {
 
 	public static void main(String[] args) {
