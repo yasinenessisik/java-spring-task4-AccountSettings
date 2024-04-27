@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
 
 import java.io.Serializable;
@@ -13,7 +16,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto{
+@RedisHash("user")
+public class UserDto implements Serializable{
+    @Id
     private String userId;
 
     private String firstName;
@@ -39,4 +44,7 @@ public class UserDto{
     private String createdAt;
 
     private String updatedAt;
+
+    @TimeToLive
+    private Long timeToLive;
 }

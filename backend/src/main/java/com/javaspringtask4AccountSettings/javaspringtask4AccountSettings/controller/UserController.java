@@ -24,49 +24,40 @@ public class UserController {
 
 
     @PostMapping("saveUser")
-    public UserDto saveUser(@RequestBody  UserRegisterRequest userRegisterRequest){
+    public UserDto saveUser(@RequestBody UserRegisterRequest userRegisterRequest) {
         return userService.saveUser(userRegisterRequest);
     }
 
     @PatchMapping("changePassword")
-    public UserDto changePassword(@RequestBody ChangePasswordRequest changePasswordRequest){
+    public UserDto changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         return userService.changePassword(changePasswordRequest);
     }
 
     @PatchMapping("changeTwoFactorAuth")
-    public UserDto changeFactorAuth(@RequestBody ChangeTwoFactorAuthRequest changeTwoFactorAuthRequest){
+    public UserDto changeFactorAuth(@RequestBody ChangeTwoFactorAuthRequest changeTwoFactorAuthRequest) {
         return userService.changeTwoFactorAuth(changeTwoFactorAuthRequest);
     }
+
     @GetMapping("getTwoFactorAuth/{userId}")
-    public ResponseEntity<TwoFactoAuthResponse> getFactorAuth(@PathVariable String userId){
+    public ResponseEntity<TwoFactoAuthResponse> getFactorAuth(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getTwoFactorAuth(userId));
     }
 
     @GetMapping("getAll")
-    public List<User> getAllUser(){
+    public List<User> getAllUser() {
         return userService.getAllUser();
     }
 
-    @GetMapping("getById/{getByIdWithCache}")
-    public  User getUserById(@PathVariable String getByIdWithCache){
-        return userService.getUserByUserId(getByIdWithCache);
-    }
-    @GetMapping("getAll2")
-    public List<User> getAllUserWithCache(){
-        return userService.getAllUserWithCache();
-    }
-
-    @GetMapping("getByIdWithCache/{getByIdWithCache}")
-    public User getAllUserWithCache(@PathVariable String getByIdWithCache){
-        return userService.getByIdWithCache(getByIdWithCache);
-    }
-
-    @GetMapping("reset")
-    public void resetCache(){
-        userService.resetCache();
-    }
     @GetMapping("getByIdMain/{userId}")
-    public UserResponse getByIdMain(@PathVariable String userId){
+    public UserResponse getUserById(@PathVariable String userId) {
         return userService.getUserByUserIdMainScreen(userId);
+    }
+    @GetMapping("getByIdM/{userId}")
+    public UserDto getUserBy(@PathVariable String userId) {
+        return userService.getUserByUserIdPublic(userId);
+    }
+    @GetMapping("resetCache/{userId}")
+    public void resetCache(@PathVariable String userId) {
+        userService.resetCache(userId);
     }
 }

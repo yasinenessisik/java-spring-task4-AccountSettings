@@ -12,19 +12,15 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.*;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.UserRepository;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.redisrepository.UserRedisRepository;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.util.CacheNames;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,8 +32,8 @@ public class UserService {
     private final UserDtoConverter userDtoConverter;
     private final PasswordEncoder passwordEncoder;
     private final UserRedisRepository userRedisRepository;
-    //@Cacheable(value = "users",key = "#userId")
-    public User getUserByUserId(String userId) {
+
+    protected User getUserByUserId(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> GenericExceptionHandler.builder()
                 .errorCode(ErrorCode.USER_NOT_FOUND)
                 .httpStatus(HttpStatus.NOT_FOUND)
@@ -45,6 +41,23 @@ public class UserService {
                 .build());
     }
 
+    public UserDto getUserByUserIdPublic(String userId) {
+        Optional<UserDto> cachedUser = userRedisRepository.findById(userId);
+        if (cachedUser.isPresent()) {
+            log.info("Data come from Redis");
+            return cachedUser.get();
+        }
+        User user = userRepository.findById(userId).orElseThrow(() -> GenericExceptionHandler.builder()
+                .errorCode(ErrorCode.USER_NOT_FOUND)
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .errorMessage("User Not Found.")
+                .build());
+        UserDto convertedUser = userDtoConverter.convert(user);
+        log.info("Data come from MySql");
+        convertedUser.setTimeToLive(60L);
+        userRedisRepository.save(convertedUser);
+        return convertedUser;
+    }
 
     @Transactional
     public UserDto saveUser(UserRegisterRequest userRegisterRequest) {
@@ -57,7 +70,7 @@ public class UserService {
 
         User user = new User();
 
-        user.setProfilePhotoPath(uniquePath+".jpg");
+        user.setProfilePhotoPath(uniquePath + ".jpg");
         user.setPassword(passwordEncoder.encode(userRegisterRequest.getPassword()));
         user.setTwoFactorAuth(twoFactorAuth);
         user.setEnabledNotification(isEnabledNotification);
@@ -101,9 +114,8 @@ public class UserService {
     }
 
     public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
-        log.info(changePasswordRequest.toString());
         User user = userRepository.findByUserId(changePasswordRequest.getUserId());
-        System.out.println(user.toString());
+
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             throw GenericExceptionHandler.builder()
                     .errorMessage("Current passwords doesn't match")
@@ -121,10 +133,10 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-        User updatedUser = userRepository.save(user);
+        User updatedUser = save(user);
         return userDtoConverter.convert(updatedUser);
     }
-    //@Cacheable(CacheNames.USER)
+
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
@@ -134,17 +146,17 @@ public class UserService {
 
         user.setTwoFactorAuth(changeTwoFactorAuthRequest.getTwoFactorAuth());
 
-        User updatedUser = userRepository.save(user);
+        User updatedUser = save(user);
 
         return userDtoConverter.convert(updatedUser);
     }
 
-    //@CachePut(value = "users",key = "#user.firstName")
     public User save(User user) {
         try {
+            if (user.getUserId() != null) {
+                userRedisRepository.deleteById(user.getUserId());
+            }
             User save = userRepository.save(user);
-            userRedisRepository.save(new UserRedis(user.getUserId(),user.getFirstName(), 30L,new NotificationsRedis(user.getNotification().getNotificationId(),
-                    user.getNotification().getAccountBalanceUpdate(),user.getNotification().getTranscationUpdate(),user.getNotification().getSecurityAlert())));
             return save;
         } catch (Exception ex) {
             throw GenericExceptionHandler.builder()
@@ -156,24 +168,15 @@ public class UserService {
 
     }
 
-
-   //@Cacheable(CacheNames.USER)
-    public List<User> getAllUserWithCache() {
-        return null;
+    public TwoFactoAuthResponse getTwoFactorAuth(String userId) {
+        User user = userRepository.findByUserId(userId);
+        return TwoFactoAuthResponse.builder()
+                .twoFactorAuth(user.getTwoFactorAuth())
+                .build();
     }
 
-    //@Cacheable(value = "users",key = "#name")
-    public User getByIdWithCache(String name) {
-        return null;
-    }
-
-    @Caching(
-            evict = {
-                    @CacheEvict(value = CacheNames.USER, allEntries = true),
-                    @CacheEvict(value = "users",allEntries = true)
-            })
-    public void resetCache(){
-
+    public void resetCache(String userId) {
+        userRedisRepository.deleteById(userId);
     }
 
     public UserResponse getUserByUserIdMainScreen(String userId) {
@@ -182,13 +185,6 @@ public class UserService {
                 .userId(user.getUserId())
                 .name(user.getFirstName())
                 .surname(user.getLastName())
-                .build();
-    }
-
-    public TwoFactoAuthResponse getTwoFactorAuth(String userId) {
-        User user = userRepository.findByUserId(userId);
-        return TwoFactoAuthResponse.builder()
-                .twoFactorAuth(user.getTwoFactorAuth())
                 .build();
     }
 }
