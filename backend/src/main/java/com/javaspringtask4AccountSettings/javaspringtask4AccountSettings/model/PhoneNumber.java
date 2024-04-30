@@ -1,6 +1,5 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +12,7 @@ public class PhoneNumber extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer phoneNumber_Id;
+    @Column(unique = true)
     private String phoneNumber;
     @ManyToOne
     @JoinColumn(name = "userId")

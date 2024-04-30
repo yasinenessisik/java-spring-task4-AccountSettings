@@ -1,8 +1,6 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto;
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.EducationLevel;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

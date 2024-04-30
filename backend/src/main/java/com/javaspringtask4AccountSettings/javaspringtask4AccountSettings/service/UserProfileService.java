@@ -1,6 +1,5 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service;
 
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserProfileDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.converter.UserProfileDtoConverter;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.profile.ChangeProfileRequest;

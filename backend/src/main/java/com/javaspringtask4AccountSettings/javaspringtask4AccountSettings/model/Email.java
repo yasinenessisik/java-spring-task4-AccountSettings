@@ -1,6 +1,5 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -12,7 +11,7 @@ public class Email extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer emailId;
-
+    @Column(unique = true)
     private String email;
 
     @ManyToOne

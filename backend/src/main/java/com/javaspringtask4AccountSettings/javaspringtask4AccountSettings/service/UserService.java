@@ -33,12 +33,17 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRedisRepository userRedisRepository;
 
+
     protected User getUserByUserId(String userId) {
-        return userRepository.findById(userId).orElseThrow(() -> GenericExceptionHandler.builder()
-                .errorCode(ErrorCode.USER_NOT_FOUND)
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .errorMessage("User Not Found.")
-                .build());
+        return userRepository.findById(userId).orElseThrow(() -> {
+                    log.error("At User Service getUserByUserId method User not found :"+ userId);
+                    return GenericExceptionHandler.builder()
+                    .errorCode(ErrorCode.USER_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .errorMessage("User Not Found.")
+                    .build();
+        }
+        );
     }
 
     public UserDto getUserByUserIdPublic(String userId) {
@@ -159,11 +164,29 @@ public class UserService {
             User save = userRepository.save(user);
             return save;
         } catch (Exception ex) {
-            throw GenericExceptionHandler.builder()
-                    .errorCode(ErrorCode.SOMETHING_WRONG_WHILE_SAVING)
-                    .httpStatus(HttpStatus.CONFLICT)
-                    .errorMessage("Something wrong while saving.")
-                    .build();
+            log.error("At User Service save method :"+ex.getMessage());
+            String errorMessage = ex.getMessage();
+            String fieldName = null;
+            if(ex.getMessage().contains("Duplicate entry")){
+                if (errorMessage.contains("email")) {
+                    fieldName = "E-mail";
+                } else if (errorMessage.contains("phone_number")) {
+                    fieldName = "Phone Number";
+                }
+                throw GenericExceptionHandler.builder()
+                        .errorCode(ErrorCode.SOMETHING_WRONG_WHILE_SAVING)
+                        .httpStatus(HttpStatus.CONFLICT)
+                        .errorMessage("Please Enter Unique Value for : "+fieldName)
+                        .build();
+            }
+            else {
+                log.error("At User Service save method :"+ex.getMessage());
+                throw GenericExceptionHandler.builder()
+                        .errorCode(ErrorCode.SOMETHING_WRONG_WHILE_SAVING)
+                        .httpStatus(HttpStatus.CONFLICT)
+                        .errorMessage(ex.getMessage())
+                        .build();
+            }
         }
 
     }

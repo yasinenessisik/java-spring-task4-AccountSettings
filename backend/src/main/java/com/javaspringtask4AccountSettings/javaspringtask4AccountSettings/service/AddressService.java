@@ -1,7 +1,6 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service;
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.AddressDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.converter.AddressDtoConverter;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.DeleteAddressRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.GetAddressRequestDto;
@@ -33,11 +32,15 @@ public class AddressService {
     }
 
     public AddressDto getAddressByAddressId(Integer addressId) {
-        return addressDtoConverter.convert(addressRepository.findById(addressId).orElseThrow(() -> GenericExceptionHandler.builder()
-                .errorMessage("Address Not Found")
-                .errorCode(ErrorCode.ADDRESS_NOT_FOUND)
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .build()));
+        return addressDtoConverter.convert(addressRepository.findById(addressId).orElseThrow(() -> {
+                    log.error("At Address Service getAddressByAddressId method Address Not Found :" + addressId);
+                    return GenericExceptionHandler.builder()
+                            .errorMessage("Address Not Found")
+                            .errorCode(ErrorCode.ADDRESS_NOT_FOUND)
+                            .httpStatus(HttpStatus.NOT_FOUND)
+                            .build();
+                }
+        ));
     }
 
     public List<Address> saveAllAddress(List<Address> address) {
@@ -74,6 +77,7 @@ public class AddressService {
         if (addressToDelete != null) {
             user.getAddresses().remove(addressToDelete);
         } else {
+            log.error("At Address Service deleteAddrress method : ADDRESS_NOT_FOUND");
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
         }
         User updatedUser = userService.save(user);
@@ -120,6 +124,7 @@ public class AddressService {
             }
             return addressDtoConverter.convert(addressRequest);
         } catch (Exception e) {
+            log.error("At Address Service getAddress method :"+e.getMessage());
             throw new GenericExceptionHandler(HttpStatus.NOT_FOUND, ErrorCode.ADDRESS_NOT_FOUND, "Address Not Found.");
 
         }

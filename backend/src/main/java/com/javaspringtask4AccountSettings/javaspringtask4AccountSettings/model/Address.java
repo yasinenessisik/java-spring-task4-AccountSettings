@@ -1,7 +1,5 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.BaseEntityDto;
 import jakarta.persistence.*;
 
 import java.io.Serializable;

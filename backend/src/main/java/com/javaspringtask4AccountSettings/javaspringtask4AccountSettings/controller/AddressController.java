@@ -1,7 +1,6 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.controller;
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.AddressDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.DeleteAddressRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.GetAddressRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.address.SaveAddressRequestDto;

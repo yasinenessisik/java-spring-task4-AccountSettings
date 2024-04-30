@@ -1,7 +1,6 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service;
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.EmailDto;
-import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.UserDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.converter.EmailDtoConverter;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.email.DeleteEmailRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.email.SaveEmailRequest;
@@ -10,6 +9,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Email;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.EmailRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class EmailService {
     private final EmailDtoConverter emailDtoConverter;
     private final UserService userService;

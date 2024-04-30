@@ -1,8 +1,6 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
