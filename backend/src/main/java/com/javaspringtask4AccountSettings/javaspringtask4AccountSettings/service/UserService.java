@@ -74,9 +74,10 @@ public class UserService {
         String uniquePath = UUID.randomUUID().toString();
 
         User user = new User();
-
         user.setProfilePhotoPath(uniquePath + ".jpg");
-        user.setPassword(passwordEncoder.encode(userRegisterRequest.getPassword()));
+        String encode = passwordEncoder.encode(userRegisterRequest.getPassword());
+        user.setPassword(encode);
+        user.getPasswordHistory().add(encode);
         user.setTwoFactorAuth(twoFactorAuth);
         user.setEnabledNotification(isEnabledNotification);
         user.setFirstName(firstName);
@@ -121,9 +122,32 @@ public class UserService {
     public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
         User user = userRepository.findByUserId(changePasswordRequest.getUserId());
 
-        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
+        List<String> passwordHistory = user.getPasswordHistory();
+        int historySize = passwordHistory.size();
+        List<String> lastThreePasswords;
+        if (historySize >= 3) {
+            lastThreePasswords = passwordHistory.subList(historySize - 3, historySize);
+        } else {
+            lastThreePasswords = passwordHistory;
+        }
+        if (!isValidNewPassword(changePasswordRequest, user.getPassword(),lastThreePasswords)) {
             throw GenericExceptionHandler.builder()
-                    .errorMessage("Current passwords doesn't match")
+                    .errorMessage("New password is not valid")
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .errorCode(ErrorCode.PASSWORD_NOT_MATCH)
+                    .build();
+        }
+
+        String encode = passwordEncoder.encode(changePasswordRequest.getNewPassword());
+        user.setPassword(encode);
+        user.getPasswordHistory().add(encode);
+        User updatedUser = save(user);
+        return userDtoConverter.convert(updatedUser);
+    }
+    private boolean isValidNewPassword(ChangePasswordRequest changePasswordRequest, String currentUserPasswordHash, List<String> lastThreePasswordHashes) {
+        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), currentUserPasswordHash)) {
+            throw GenericExceptionHandler.builder()
+                    .errorMessage("Current password is incorrect")
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .errorCode(ErrorCode.PASSWORD_NOT_MATCH)
                     .build();
@@ -131,15 +155,31 @@ public class UserService {
 
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
             throw GenericExceptionHandler.builder()
-                    .errorMessage("New password don't match")
+                    .errorMessage("New passwords don't match")
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .errorCode(ErrorCode.PASSWORD_NOT_MATCH)
                     .build();
         }
 
-        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-        User updatedUser = save(user);
-        return userDtoConverter.convert(updatedUser);
+        if (!areLastThreePasswordsDifferent(lastThreePasswordHashes, changePasswordRequest.getNewPassword())) {
+            throw GenericExceptionHandler.builder()
+                    .errorMessage("New password must be different from last three passwords")
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .errorCode(ErrorCode.PASSWORD_NOT_MATCH)
+                    .build();
+        }
+
+        return true;
+    }
+    private boolean areLastThreePasswordsDifferent(List<String> lastThreePasswordHashes, String newPassword) {
+        String newPasswordHash = passwordEncoder.encode(newPassword);
+
+        for (String passwordHash : lastThreePasswordHashes) {
+            if (passwordEncoder.matches(newPasswordHash, passwordHash)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<User> getAllUser() {
@@ -203,7 +243,7 @@ public class UserService {
     }
 
     public UserResponse getUserByUserIdMainScreen(String userId) {
-        User user = userRepository.findByUserId(userId);
+        User user = getUserByUserId(userId);
         return UserResponse.builder()
                 .userId(user.getUserId())
                 .name(user.getFirstName())

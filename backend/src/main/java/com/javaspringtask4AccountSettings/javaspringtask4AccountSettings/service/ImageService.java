@@ -1,6 +1,7 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service;
 
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.config.StorageConfig;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.image.ImageRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.ErrorCode;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.ImageData;
@@ -14,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -70,24 +74,33 @@ public class ImageService {
         return images;
     }
 
-    public String updateImageInFileSystem(String userId, MultipartFile newFile) throws IOException {
-        User user = userService.getUserByUserId(userId);
-        Optional<ImageData> fileData = imageRepository.findByName(user.getProfilePhotoPath());
-        if (fileData.isPresent()) {
-            String filePath = fileData.get().getImagePath();
-            File oldFile = new File(filePath);
-            if (oldFile.exists()) {
-                oldFile.delete();
-                newFile.transferTo(new File(filePath));
-
-                return "file updated successfully : " + userId;
+    public String updateImageInFileSystem(ImageRequestDto imageRequestDto) {
+        try {
+            User user = userService.getUserByUserId(imageRequestDto.getUserId());
+            String userId = imageRequestDto.getUserId();
+            Optional<ImageData> fileData = imageRepository.findByName(user.getProfilePhotoPath());
+            if (fileData.isPresent()) {
+                String filePath = fileData.get().getImagePath();
+                File oldFile = new File(filePath);
+                byte[] imageData = Base64.getDecoder().decode(imageRequestDto.getImageBase64());
+                if (oldFile.exists()) {
+                    oldFile.delete();
+                    Files.write(Paths.get(storageConfig.folderPath(), fileData.get().getName()), imageData, StandardOpenOption.CREATE);
+                    return "File updated successfully: " + userId;
+                } else {
+                    Files.write(Paths.get(storageConfig.folderPath(), fileData.get().getName()), imageData, StandardOpenOption.CREATE);
+                    return "New file created: " + userId;
+                }
             } else {
-                return uploadImageToFileSystem(userId,newFile);
+                return "File not found: " + userId;
             }
-        } else {
-            return "file not found : " + userId;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed to update file: " + e.getMessage();
         }
     }
+
+
     private String getFileExtension(String filename) {
         if (filename != null && filename.lastIndexOf(".") != -1) {
             return filename.substring(filename.lastIndexOf("."));

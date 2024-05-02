@@ -3,9 +3,12 @@ package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.servic
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.converter.NotificationDtoConverter;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.notification.ChangeNotificationSettingsRequest;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.response.ChangeNotificationResponseDto;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.ErrorCode;
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.exception.GenericExceptionHandler;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.Notification;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.NotificationRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,14 +28,22 @@ public class NotificationService {
     public ChangeNotificationResponseDto changeNotifications(ChangeNotificationSettingsRequest from) {
         User user = userService.getUserByUserId(from.getUserId());
 
-        Notification notification = new Notification(from.getAccountBalanceUpdates(), from.getTransactionAlerts(), from.getSecurityAlerts(), user);
-        notificationRepository.deleteById(user.getNotification().getNotificationId());
-        user.setEnabledNotification(from.getEnableNotifications());
-
-        user.setNotification(notification);
-
-        User updatedUser = userService.save(user);
-        return notificationDtoConverter.convert(updatedUser.getNotification(),updatedUser.getEnabledNotification());
+        if(!from.getEnableNotifications()){
+            user.setEnabledNotification(from.getEnableNotifications());
+            Notification notification = new Notification(false, false, false, user);
+            notificationRepository.deleteById(user.getNotification().getNotificationId());
+            user.setNotification(notification);
+            User updatedUser = userService.save(user);
+            return notificationDtoConverter.convert(updatedUser.getNotification(), updatedUser.getEnabledNotification());
+        }
+        else {
+            user.setEnabledNotification(from.getEnableNotifications());
+            Notification notification = new Notification(from.getAccountBalanceUpdates(), from.getTransactionAlerts(), from.getSecurityAlerts(), user);
+            notificationRepository.deleteById(user.getNotification().getNotificationId());
+            user.setNotification(notification);
+            User updatedUser = userService.save(user);
+            return notificationDtoConverter.convert(updatedUser.getNotification(), updatedUser.getEnabledNotification());
+        }
     }
 
     public ChangeNotificationResponseDto getNotification(String userId) {

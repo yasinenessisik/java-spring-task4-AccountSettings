@@ -1,6 +1,8 @@
 package com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.controller;
 
+import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.request.image.ImageRequestDto;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.ImageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/controller/image")
+@Slf4j
 public class ImageController {
 
     private final ImageService service;
@@ -33,9 +36,10 @@ public class ImageController {
                 .body(imageData);
 
     }
-    @PostMapping("/fileSystema/{userId}")
-    public ResponseEntity<?> updateImageInFileSystem(@PathVariable String userId, @RequestParam("file") MultipartFile file) throws IOException {
-        String updateResult = service.updateImageInFileSystem(userId, file);
+    @PostMapping("/fileSystema")
+    public ResponseEntity<?> updateImageInFileSystem(@RequestBody ImageRequestDto imageRequestDto) throws IOException {
+        log.info("Buraya geldi");
+        String updateResult = service.updateImageInFileSystem(imageRequestDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(updateResult);
     }
