@@ -25,8 +25,6 @@ public class User extends BaseEntity implements Serializable {
     private String password;
 
     private String profilePhotoPath;
-    @ElementCollection
-    private List<String> passwordHistory = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Email> emails;
@@ -51,13 +49,7 @@ public class User extends BaseEntity implements Serializable {
 
     private Boolean isEnabledNotification;
 
-    public List<String> getPasswordHistory() {
-        return passwordHistory;
-    }
 
-    public void setPasswordHistory(List<String> passwordHistory) {
-        this.passwordHistory = passwordHistory;
-    }
 
     public String getProfilePhotoPath() {
         return profilePhotoPath;

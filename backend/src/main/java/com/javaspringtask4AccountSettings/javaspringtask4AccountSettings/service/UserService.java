@@ -77,7 +77,6 @@ public class UserService {
         user.setProfilePhotoPath(uniquePath + ".jpg");
         String encode = passwordEncoder.encode(userRegisterRequest.getPassword());
         user.setPassword(encode);
-        user.getPasswordHistory().add(encode);
         user.setTwoFactorAuth(twoFactorAuth);
         user.setEnabledNotification(isEnabledNotification);
         user.setFirstName(firstName);
@@ -122,15 +121,8 @@ public class UserService {
     public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
         User user = userRepository.findByUserId(changePasswordRequest.getUserId());
 
-        List<String> passwordHistory = user.getPasswordHistory();
-        int historySize = passwordHistory.size();
-        List<String> lastThreePasswords;
-        if (historySize >= 3) {
-            lastThreePasswords = passwordHistory.subList(historySize - 3, historySize);
-        } else {
-            lastThreePasswords = passwordHistory;
-        }
-        if (!isValidNewPassword(changePasswordRequest, user.getPassword(),lastThreePasswords)) {
+
+        if (!isValidNewPassword(changePasswordRequest, user.getPassword())) {
             throw GenericExceptionHandler.builder()
                     .errorMessage("New password is not valid")
                     .httpStatus(HttpStatus.BAD_REQUEST)
@@ -140,11 +132,10 @@ public class UserService {
 
         String encode = passwordEncoder.encode(changePasswordRequest.getNewPassword());
         user.setPassword(encode);
-        user.getPasswordHistory().add(encode);
         User updatedUser = save(user);
         return userDtoConverter.convert(updatedUser);
     }
-    private boolean isValidNewPassword(ChangePasswordRequest changePasswordRequest, String currentUserPasswordHash, List<String> lastThreePasswordHashes) {
+    private boolean isValidNewPassword(ChangePasswordRequest changePasswordRequest, String currentUserPasswordHash) {
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), currentUserPasswordHash)) {
             throw GenericExceptionHandler.builder()
                     .errorMessage("Current password is incorrect")
@@ -160,15 +151,6 @@ public class UserService {
                     .errorCode(ErrorCode.PASSWORD_NOT_MATCH)
                     .build();
         }
-
-        if (!areLastThreePasswordsDifferent(lastThreePasswordHashes, changePasswordRequest.getNewPassword())) {
-            throw GenericExceptionHandler.builder()
-                    .errorMessage("New password must be different from last three passwords")
-                    .httpStatus(HttpStatus.BAD_REQUEST)
-                    .errorCode(ErrorCode.PASSWORD_NOT_MATCH)
-                    .build();
-        }
-
         return true;
     }
     private boolean areLastThreePasswordsDifferent(List<String> lastThreePasswordHashes, String newPassword) {

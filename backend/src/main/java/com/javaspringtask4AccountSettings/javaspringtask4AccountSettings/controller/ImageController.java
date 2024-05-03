@@ -38,7 +38,6 @@ public class ImageController {
     }
     @PostMapping("/fileSystema")
     public ResponseEntity<?> updateImageInFileSystem(@RequestBody ImageRequestDto imageRequestDto) throws IOException {
-        log.info("Buraya geldi");
         String updateResult = service.updateImageInFileSystem(imageRequestDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(updateResult);

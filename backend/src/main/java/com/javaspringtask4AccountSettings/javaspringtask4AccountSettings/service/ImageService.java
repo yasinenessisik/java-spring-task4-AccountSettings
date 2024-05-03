@@ -7,6 +7,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.excepti
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.ImageData;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.repository.jparepository.ImageRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -74,37 +75,45 @@ public class ImageService {
         return images;
     }
 
+    @Transactional
     public String updateImageInFileSystem(ImageRequestDto imageRequestDto) {
         try {
             User user = userService.getUserByUserId(imageRequestDto.getUserId());
             String userId = imageRequestDto.getUserId();
             Optional<ImageData> fileData = imageRepository.findByName(user.getProfilePhotoPath());
+            byte[] imageData = Base64.getDecoder().decode(imageRequestDto.getImageBase64());
+
             if (fileData.isPresent()) {
                 String filePath = fileData.get().getImagePath();
                 File oldFile = new File(filePath);
-                byte[] imageData = Base64.getDecoder().decode(imageRequestDto.getImageBase64());
                 if (oldFile.exists()) {
-                    oldFile.delete();
-                    Files.write(Paths.get(storageConfig.folderPath(), fileData.get().getName()), imageData, StandardOpenOption.CREATE);
-                    return "File updated successfully: " + userId;
+                    if (oldFile.delete()) {
+                        Files.write(Paths.get(storageConfig.folderPath(), fileData.get().getName()), imageData, StandardOpenOption.CREATE);
+                        return "File updated successfully: " + userId;
+                    } else {
+                        return "Failed to delete existing file: " + userId;
+                    }
                 } else {
                     Files.write(Paths.get(storageConfig.folderPath(), fileData.get().getName()), imageData, StandardOpenOption.CREATE);
                     return "New file created: " + userId;
                 }
             } else {
+                String fileName = user.getProfilePhotoPath().trim();
+                // Assuming imagePath should be the same as the folder path
+                String imagePath = Paths.get(storageConfig.folderPath(), fileName).toString();
+                imageRepository.save(ImageData.builder()
+                        .name(fileName)
+                        .type("image/jpeg")
+                        .imagePath(imagePath).build());
+                Files.write(Paths.get(storageConfig.folderPath(), fileName), imageData, StandardOpenOption.CREATE);
                 return "File not found: " + userId;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            // Log the exception for better error tracing
+            log.error("Failed to update file: " + e.getMessage(), e);
             return "Failed to update file: " + e.getMessage();
         }
     }
 
 
-    private String getFileExtension(String filename) {
-        if (filename != null && filename.lastIndexOf(".") != -1) {
-            return filename.substring(filename.lastIndexOf("."));
-        }
-        return "";
-    }
 }

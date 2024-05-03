@@ -8,6 +8,7 @@ import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.res
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.dto.response.UserResponse;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.model.User;
 import com.javaspringtask4AccountSettings.javaspringtask4AccountSettings.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PatchMapping("changeTwoFactorAuth")
-    public UserDto changeFactorAuth(@RequestBody ChangeTwoFactorAuthRequest changeTwoFactorAuthRequest) {
+    public UserDto changeFactorAuth(@Valid @RequestBody ChangeTwoFactorAuthRequest changeTwoFactorAuthRequest) {
         return userService.changeTwoFactorAuth(changeTwoFactorAuthRequest);
     }
 
