@@ -10,7 +10,7 @@ import org.springframework.web.multipart.support.MultipartFilter;
 
 @SpringBootApplication
 public class JavaSpringTask4AccountSettingsApplication {
-
+	//git subfolder arragment
 	public static void main(String[] args) {
 		SpringApplication.run(JavaSpringTask4AccountSettingsApplication.class, args);
 	}
